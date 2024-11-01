@@ -5,6 +5,8 @@ pragma solidity ^0.8.3;
 import {MathMasters} from "./MathMasters.sol";
 
 contract Wrapper {
+
+    constructor() {}
     function mulWad(uint256 x, uint256 y) public pure returns (uint256) {
         return MathMasters.mulWad(x, y);
     }

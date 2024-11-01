@@ -1,0 +1,474 @@
+<style> code { white-space: pre-wrap; display: block; background-color: #eee; }.executed { background-color: #afa; }.reverted { background-color: #ffa; }.unexecuted { background-color: #faa; }.neutral { background-color: #eee; }</style><b>/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/lib/chimera/src/Asserts.sol</b>
+<code>
+  1 |     | <span class='unexecuted'>// SPDX-License-Identifier: MIT</span>
+  2 |     | <span class='neutral'>pragma solidity ^0.8.0;</span>
+  3 |     | <span class='neutral'></span>
+  4 |     | <span class='neutral'>abstract contract Asserts {</span>
+  5 |     | <span class='neutral'>    function gt(uint256 a, uint256 b, string memory reason) internal virtual;</span>
+  6 |     | <span class='neutral'></span>
+  7 |     | <span class='neutral'>    function gte(uint256 a, uint256 b, string memory reason) internal virtual;</span>
+  8 |     | <span class='neutral'></span>
+  9 |     | <span class='neutral'>    function lt(uint256 a, uint256 b, string memory reason) internal virtual;</span>
+ 10 |     | <span class='neutral'></span>
+ 11 |     | <span class='neutral'>    function lte(uint256 a, uint256 b, string memory reason) internal virtual;</span>
+ 12 |     | <span class='neutral'></span>
+ 13 |     | <span class='neutral'>    function eq(uint256 a, uint256 b, string memory reason) internal virtual;</span>
+ 14 |     | <span class='neutral'></span>
+ 15 |     | <span class='neutral'>    function t(bool b, string memory reason) internal virtual;</span>
+ 16 |     | <span class='neutral'></span>
+ 17 |     | <span class='neutral'>    function between(uint256 value, uint256 low, uint256 high) internal virtual returns (uint256);</span>
+ 18 |     | <span class='neutral'></span>
+ 19 |     | <span class='neutral'>    function between(int256 value, int256 low, int256 high) internal virtual returns (int256);</span>
+ 20 |     | <span class='neutral'></span>
+ 21 |     | <span class='neutral'>    function precondition(bool p) internal virtual;</span>
+ 22 |     | <span class='neutral'>}</span>
+ 23 |     | <span class='neutral'></span>
+
+</code>
+<br />
+
+<b>/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/lib/chimera/src/BaseProperties.sol</b>
+<code>
+ 1 |     | <span class='neutral'>// SPDX-License-Identifier: MIT</span>
+ 2 |     | <span class='neutral'>pragma solidity ^0.8.0;</span>
+ 3 |     | <span class='neutral'></span>
+ 4 |     | <span class='neutral'>import {BaseSetup} from &quot;./BaseSetup.sol&quot;;</span>
+ 5 |     | <span class='neutral'></span>
+ 6 |     | <span class='neutral'>abstract contract BaseProperties is BaseSetup {}</span>
+ 7 |     | <span class='neutral'></span>
+
+</code>
+<br />
+
+<b>/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/lib/chimera/src/BaseSetup.sol</b>
+<code>
+ 1 |     | <span class='neutral'>// SPDX-License-Identifier: MIT</span>
+ 2 |     | <span class='neutral'>pragma solidity ^0.8.0;</span>
+ 3 |     | <span class='neutral'></span>
+ 4 |     | <span class='neutral'>abstract contract BaseSetup {</span>
+ 5 |     | <span class='neutral'>    function setup() internal virtual;</span>
+ 6 |     | <span class='neutral'>}</span>
+ 7 |     | <span class='neutral'></span>
+
+</code>
+<br />
+
+<b>/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/lib/chimera/src/BaseTargetFunctions.sol</b>
+<code>
+ 1 |     | <span class='neutral'>// SPDX-License-Identifier: MIT</span>
+ 2 |     | <span class='neutral'>pragma solidity ^0.8.0;</span>
+ 3 |     | <span class='neutral'></span>
+ 4 |     | <span class='neutral'>import {BaseProperties} from &quot;./BaseProperties.sol&quot;;</span>
+ 5 |     | <span class='neutral'>import {Asserts} from &quot;./Asserts.sol&quot;;</span>
+ 6 |     | <span class='neutral'></span>
+ 7 |     | <span class='neutral'>abstract contract BaseTargetFunctions is BaseProperties, Asserts {}</span>
+ 8 |     | <span class='neutral'></span>
+
+</code>
+<br />
+
+<b>/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/lib/chimera/src/CryticAsserts.sol</b>
+<code>
+  1 |     | <span class='neutral'>// SPDX-License-Identifier: MIT</span>
+  2 |     | <span class='neutral'>pragma solidity ^0.8.0;</span>
+  3 |     | <span class='neutral'></span>
+  4 |     | <span class='neutral'>import {Asserts} from &quot;./Asserts.sol&quot;;</span>
+  5 |     | <span class='neutral'></span>
+  6 |     | <span class='unexecuted'>contract CryticAsserts is Asserts {</span>
+  7 |     | <span class='neutral'>    event Log(string);</span>
+  8 |     | <span class='neutral'></span>
+  9 |     | <span class='neutral'>    function gt(uint256 a, uint256 b, string memory reason) internal virtual override {</span>
+ 10 |     | <span class='neutral'>        if (!(a &gt; b)) {</span>
+ 11 |     | <span class='neutral'>            emit Log(reason);</span>
+ 12 |     | <span class='neutral'>            assert(false);</span>
+ 13 |     | <span class='neutral'>        }</span>
+ 14 |     | <span class='neutral'>    }</span>
+ 15 |     | <span class='neutral'></span>
+ 16 |     | <span class='neutral'>    function gte(uint256 a, uint256 b, string memory reason) internal virtual override {</span>
+ 17 |     | <span class='neutral'>        if (!(a &gt;= b)) {</span>
+ 18 |     | <span class='neutral'>            emit Log(reason);</span>
+ 19 |     | <span class='neutral'>            assert(false);</span>
+ 20 |     | <span class='neutral'>        }</span>
+ 21 |     | <span class='neutral'>    }</span>
+ 22 |     | <span class='neutral'></span>
+ 23 |     | <span class='neutral'>    function lt(uint256 a, uint256 b, string memory reason) internal virtual override {</span>
+ 24 |     | <span class='neutral'>        if (!(a &lt; b)) {</span>
+ 25 |     | <span class='neutral'>            emit Log(reason);</span>
+ 26 |     | <span class='neutral'>            assert(false);</span>
+ 27 |     | <span class='neutral'>        }</span>
+ 28 |     | <span class='neutral'>    }</span>
+ 29 |     | <span class='neutral'></span>
+ 30 |     | <span class='neutral'>    function lte(uint256 a, uint256 b, string memory reason) internal virtual override {</span>
+ 31 |     | <span class='neutral'>        if (!(a &lt;= b)) {</span>
+ 32 |     | <span class='neutral'>            emit Log(reason);</span>
+ 33 |     | <span class='neutral'>            assert(false);</span>
+ 34 |     | <span class='neutral'>        }</span>
+ 35 |     | <span class='neutral'>    }</span>
+ 36 |     | <span class='neutral'></span>
+ 37 |     | <span class='neutral'>    function eq(uint256 a, uint256 b, string memory reason) internal virtual override {</span>
+ 38 |     | <span class='neutral'>        if (!(a == b)) {</span>
+ 39 |     | <span class='neutral'>            emit Log(reason);</span>
+ 40 |     | <span class='neutral'>            assert(false);</span>
+ 41 |     | <span class='neutral'>        }</span>
+ 42 |     | <span class='neutral'>    }</span>
+ 43 |     | <span class='neutral'></span>
+ 44 |     | <span class='neutral'>    function t(bool b, string memory reason) internal virtual override {</span>
+ 45 |     | <span class='neutral'>        if (!b) {</span>
+ 46 |     | <span class='neutral'>            emit Log(reason);</span>
+ 47 |     | <span class='neutral'>            assert(false);</span>
+ 48 |     | <span class='neutral'>        }</span>
+ 49 |     | <span class='neutral'>    }</span>
+ 50 |     | <span class='neutral'></span>
+ 51 |     | <span class='neutral'>    function between(uint256 value, uint256 low, uint256 high) internal virtual override returns (uint256) {</span>
+ 52 |     | <span class='neutral'>        if (value &lt; low || value &gt; high) {</span>
+ 53 |     | <span class='neutral'>            uint256 ans = low + (value % (high - low + 1));</span>
+ 54 |     | <span class='neutral'>            return ans;</span>
+ 55 |     | <span class='neutral'>        }</span>
+ 56 |     | <span class='neutral'>        return value;</span>
+ 57 |     | <span class='neutral'>    }</span>
+ 58 |     | <span class='neutral'></span>
+ 59 |     | <span class='neutral'>    function between(int256 value, int256 low, int256 high) internal virtual override returns (int256) {</span>
+ 60 |     | <span class='neutral'>        if (value &lt; low || value &gt; high) {</span>
+ 61 |     | <span class='neutral'>            int256 range = high - low + 1;</span>
+ 62 |     | <span class='neutral'>            int256 clamped = (value - low) % (range);</span>
+ 63 |     | <span class='neutral'>            if (clamped &lt; 0) clamped += range;</span>
+ 64 |     | <span class='neutral'>            int256 ans = low + clamped;</span>
+ 65 |     | <span class='neutral'>            return ans;</span>
+ 66 |     | <span class='neutral'>        }</span>
+ 67 |     | <span class='neutral'>        return value;</span>
+ 68 |     | <span class='neutral'>    }</span>
+ 69 |     | <span class='neutral'></span>
+ 70 |     | <span class='neutral'>    function precondition(bool p) internal virtual override {</span>
+ 71 |     | <span class='neutral'>        require(p);</span>
+ 72 |     | <span class='neutral'>    }</span>
+ 73 |     | <span class='neutral'>}</span>
+ 74 |     | <span class='neutral'></span>
+
+</code>
+<br />
+
+<b>/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/lib/chimera/src/Hevm.sol</b>
+<code>
+  1 |     | <span class='neutral'>// SPDX-License-Identifier: MIT</span>
+  2 |     | <span class='neutral'>pragma solidity ^0.8.0;</span>
+  3 |     | <span class='neutral'></span>
+  4 |     | <span class='neutral'>// slither-disable-start shadowing-local</span>
+  5 |     | <span class='neutral'></span>
+  6 |     | <span class='neutral'>interface IHevm {</span>
+  7 |     | <span class='neutral'>    // Set block.timestamp to newTimestamp</span>
+  8 |     | <span class='neutral'>    function warp(uint256 newTimestamp) external;</span>
+  9 |     | <span class='neutral'></span>
+ 10 |     | <span class='neutral'>    // Set block.number to newNumber</span>
+ 11 |     | <span class='neutral'>    function roll(uint256 newNumber) external;</span>
+ 12 |     | <span class='neutral'></span>
+ 13 |     | <span class='neutral'>    // Add the condition b to the assumption base for the current branch</span>
+ 14 |     | <span class='neutral'>    // This function is almost identical to require</span>
+ 15 |     | <span class='neutral'>    function assume(bool b) external;</span>
+ 16 |     | <span class='neutral'></span>
+ 17 |     | <span class='neutral'>    // Sets the eth balance of usr to amt</span>
+ 18 |     | <span class='neutral'>    function deal(address usr, uint256 amt) external;</span>
+ 19 |     | <span class='neutral'></span>
+ 20 |     | <span class='neutral'>    // Loads a storage slot from an address</span>
+ 21 |     | <span class='neutral'>    function load(address where, bytes32 slot) external returns (bytes32);</span>
+ 22 |     | <span class='neutral'></span>
+ 23 |     | <span class='neutral'>    // Stores a value to an address&#39; storage slot</span>
+ 24 |     | <span class='neutral'>    function store(address where, bytes32 slot, bytes32 value) external;</span>
+ 25 |     | <span class='neutral'></span>
+ 26 |     | <span class='neutral'>    // Signs data (privateKey, digest) =&gt; (v, r, s)</span>
+ 27 |     | <span class='neutral'>    function sign(uint256 privateKey, bytes32 digest) external returns (uint8 v, bytes32 r, bytes32 s);</span>
+ 28 |     | <span class='neutral'></span>
+ 29 |     | <span class='neutral'>    // Gets address for a given private key</span>
+ 30 |     | <span class='neutral'>    function addr(uint256 privateKey) external returns (address addr);</span>
+ 31 |     | <span class='neutral'></span>
+ 32 |     | <span class='neutral'>    // Performs a foreign function call via terminal</span>
+ 33 |     | <span class='neutral'>    function ffi(string[] calldata inputs) external returns (bytes memory result);</span>
+ 34 |     | <span class='neutral'></span>
+ 35 |     | <span class='neutral'>    // Performs the next smart contract call with specified `msg.sender`</span>
+ 36 |     | <span class='neutral'>    function prank(address newSender) external;</span>
+ 37 |     | <span class='neutral'></span>
+ 38 |     | <span class='neutral'>    // Creates a new fork with the given endpoint and the latest block and returns the identifier of the fork</span>
+ 39 |     | <span class='neutral'>    function createFork(string calldata urlOrAlias) external returns (uint256);</span>
+ 40 |     | <span class='neutral'></span>
+ 41 |     | <span class='neutral'>    // Takes a fork identifier created by createFork and sets the corresponding forked state as active</span>
+ 42 |     | <span class='neutral'>    function selectFork(uint256 forkId) external;</span>
+ 43 |     | <span class='neutral'></span>
+ 44 |     | <span class='neutral'>    // Returns the identifier of the current fork</span>
+ 45 |     | <span class='neutral'>    function activeFork() external returns (uint256);</span>
+ 46 |     | <span class='neutral'></span>
+ 47 |     | <span class='neutral'>    // Labels the address in traces</span>
+ 48 |     | <span class='neutral'>    function label(address addr, string calldata label) external;</span>
+ 49 |     | <span class='neutral'></span>
+ 50 |     | <span class='neutral'>    /// Sets an address&#39; code.</span>
+ 51 |     | <span class='neutral'>    function etch(address target, bytes calldata newRuntimeBytecode) external;</span>
+ 52 |     | <span class='neutral'>}</span>
+ 53 |     | <span class='neutral'></span>
+ 54 |     | <span class='neutral'>IHevm constant vm = IHevm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);</span>
+ 55 |     | <span class='neutral'></span>
+ 56 |     | <span class='neutral'>// slither-disable-end shadowing-local</span>
+ 57 |     | <span class='neutral'></span>
+
+</code>
+<br />
+
+<b>/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/src/MathMasters.sol</b>
+<code>
+   1 |     | <span class='neutral'>// SPDX-License-Identifier: MIT</span>
+   2 |     | <span class='neutral'>// @notice We intentionally want to leave this as floating point so others can use it as a library.</span>
+   3 |     | <span class='neutral'>pragma solidity ^0.8.3;</span>
+   4 |     | <span class='neutral'></span>
+   5 |     | <span class='neutral'>/// @notice Arithmetic library with operations for fixed-point numbers.</span>
+   6 |     | <span class='neutral'>/// @notice People taking my course: Don&#39;t cheat and look at the answers!</span>
+   7 |     | <span class='neutral'>/// @author Math Masters</span>
+   8 |     | <span class='neutral'>/// @author Modified from Solady (https://github.com/vectorized/solady/blob/main/src/utils/FixedPointMathLib.sol)</span>
+   9 |     | <span class='neutral'>/// @author Modified from Solmate (https://github.com/transmissions11/solmate/blob/main/src/utils/FixedPointMathLib.sol)</span>
+  10 |     | <span class='unexecuted'>library MathMasters {</span>
+  11 |     | <span class='neutral'>    /*//////////////////////////////////////////////////////////////</span>
+  12 |     | <span class='neutral'>                                 ERRORS</span>
+  13 |     | <span class='neutral'>    //////////////////////////////////////////////////////////////*/</span>
+  14 |     | <span class='neutral'>    error MathMasters__FactorialOverflow();</span>
+  15 |     | <span class='neutral'>    error MathMasters__MulWadFailed();</span>
+  16 |     | <span class='neutral'>    error MathMasters__DivWadFailed();</span>
+  17 |     | <span class='neutral'>    error MathMasters__FullMulDivFailed();</span>
+  18 |     | <span class='neutral'></span>
+  19 |     | <span class='neutral'>    /*//////////////////////////////////////////////////////////////</span>
+  20 |     | <span class='neutral'>    /*                         CONSTANTS                          */</span>
+  21 |     | <span class='neutral'>    //////////////////////////////////////////////////////////////*/</span>
+  22 |     | <span class='neutral'>    /// @dev The scalar of ETH and most ERC20s.</span>
+  23 |     | <span class='neutral'>    uint256 internal constant WAD = 1e18; // WAD just means 18 decimal places</span>
+  24 |     | <span class='neutral'></span>
+  25 |     | <span class='neutral'>    // History lesson: WAD, RAY, and RAD were introduced in MakerDAO&#39;s original DAI system. The names sort of stuck.</span>
+  26 |     | <span class='neutral'>    // wad: fixed point decimal with 18 decimals (for basic quantities, e.g. balances)</span>
+  27 |     | <span class='neutral'>    // ray: fixed point decimal with 27 decimals (for precise quantites, e.g. ratios)</span>
+  28 |     | <span class='neutral'>    // rad: fixed point decimal with 45 decimals (result of integer multiplication with a wad and a ray)</span>
+  29 |     | <span class='neutral'></span>
+  30 |     | <span class='neutral'>    /*//////////////////////////////////////////////////////////////</span>
+  31 |     | <span class='neutral'>    /*              SIMPLIFIED FIXED POINT OPERATIONS             */</span>
+  32 |     | <span class='neutral'>    //////////////////////////////////////////////////////////////*/</span>
+  33 |     | <span class='neutral'></span>
+  34 |     | <span class='neutral'>    /// @dev Equivalent to `(x * y) / WAD` rounded down.</span>
+  35 | *   | <span class='executed'>    function mulWad(uint256 x, uint256 y) internal pure returns (uint256 z) {</span>
+  36 |     | <span class='neutral'>        // @solidity memory-safe-assembly</span>
+  37 |     | <span class='neutral'>        assembly {</span>
+  38 |     | <span class='neutral'>            // Equivalent to `require(y == 0 || x &lt;= type(uint256).max / y)`.</span>
+  39 | *   | <span class='executed'>            if mul(y, gt(x, div(not(0), y))) {</span>
+  40 | *   | <span class='executed'>                mstore(0x40, 0xbac65e5b) // `MathMasters__MulWadFailed()`.</span>
+  41 | *   | <span class='executed'>                revert(0x1c, 0x04)</span>
+  42 |     | <span class='neutral'>            }</span>
+  43 | *   | <span class='executed'>            z := div(mul(x, y), WAD)</span>
+  44 |     | <span class='neutral'>        }</span>
+  45 |     | <span class='neutral'>    }</span>
+  46 |     | <span class='neutral'></span>
+  47 |     | <span class='neutral'>    /// @dev Equivalent to `(x * y) / WAD` rounded up.</span>
+  48 | *   | <span class='executed'>    function mulWadUp(uint256 x, uint256 y) internal pure returns (uint256 z) {</span>
+  49 |     | <span class='neutral'>        /// @solidity memory-safe-assembly</span>
+  50 |     | <span class='neutral'>        assembly {</span>
+  51 |     | <span class='neutral'>            // Equivalent to `require(y == 0 || x &lt;= type(uint256).max / y)`.</span>
+  52 | *   | <span class='executed'>            if mul(y, gt(x, or(div(not(0), y), x))) {</span>
+  53 |     | <span class='unexecuted'>                mstore(0x40, 0xbac65e5b) // `MathMasters__MulWadFailed()`.</span>
+  54 |     | <span class='unexecuted'>                revert(0x1c, 0x04)</span>
+  55 |     | <span class='neutral'>            }</span>
+  56 | *   | <span class='executed'>            if iszero(sub(div(add(z, x), y), 1)) { x := add(x, 1) }</span>
+  57 | *   | <span class='executed'>            z := add(iszero(iszero(mod(mul(x, y), WAD))), div(mul(x, y), WAD))</span>
+  58 |     | <span class='neutral'>        }</span>
+  59 |     | <span class='neutral'>    }</span>
+  60 |     | <span class='neutral'></span>
+  61 |     | <span class='neutral'>    /*//////////////////////////////////////////////////////////////</span>
+  62 |     | <span class='neutral'>    /*                  GENERAL NUMBER UTILITIES                  */</span>
+  63 |     | <span class='neutral'>    //////////////////////////////////////////////////////////////*/</span>
+  64 |     | <span class='neutral'></span>
+  65 |     | <span class='neutral'>    /// @dev Returns the square root of `x`.</span>
+  66 | *   | <span class='executed'>    function sqrt(uint256 x) internal pure returns (uint256 z) {</span>
+  67 |     | <span class='neutral'>        /// @solidity memory-safe-assembly</span>
+  68 |     | <span class='neutral'>        assembly {</span>
+  69 | *   | <span class='executed'>            z := 181</span>
+  70 |     | <span class='neutral'></span>
+  71 |     | <span class='neutral'>            // This segment is to get a reasonable initial estimate for the Babylonian method. With a bad</span>
+  72 |     | <span class='neutral'>            // start, the correct # of bits increases ~linearly each iteration instead of ~quadratically.</span>
+  73 | *   | <span class='executed'>            let r := shl(7, lt(87112285931760246646623899502532662132735, x))</span>
+  74 | *   | <span class='executed'>            r := or(r, shl(6, lt(4722366482869645213695, shr(r, x))))</span>
+  75 | *   | <span class='executed'>            r := or(r, shl(5, lt(1099511627775, shr(r, x))))</span>
+  76 |     | <span class='neutral'>            // Correct: 16777215 0xffffff</span>
+  77 | *   | <span class='executed'>            r := or(r, shl(4, lt(16777002, shr(r, x))))</span>
+  78 | *   | <span class='executed'>            z := shl(shr(1, r), z)</span>
+  79 |     | <span class='neutral'></span>
+  80 |     | <span class='neutral'>            // There is no overflow risk here since `y &lt; 2**136` after the first branch above.</span>
+  81 | *   | <span class='executed'>            z := shr(18, mul(z, add(shr(r, x), 65536))) // A `mul()` is saved from starting `z` at 181.</span>
+  82 |     | <span class='neutral'></span>
+  83 |     | <span class='neutral'>            // Given the worst case multiplicative error of 2.84 above, 7 iterations should be enough.</span>
+  84 | *   | <span class='executed'>            z := shr(1, add(z, div(x, z)))</span>
+  85 | *   | <span class='executed'>            z := shr(1, add(z, div(x, z)))</span>
+  86 | *   | <span class='executed'>            z := shr(1, add(z, div(x, z)))</span>
+  87 | *   | <span class='executed'>            z := shr(1, add(z, div(x, z)))</span>
+  88 | *   | <span class='executed'>            z := shr(1, add(z, div(x, z)))</span>
+  89 | *   | <span class='executed'>            z := shr(1, add(z, div(x, z)))</span>
+  90 | *   | <span class='executed'>            z := shr(1, add(z, div(x, z)))</span>
+  91 |     | <span class='neutral'></span>
+  92 |     | <span class='neutral'>            // If `x+1` is a perfect square, the Babylonian method cycles between</span>
+  93 |     | <span class='neutral'>            // `floor(sqrt(x))` and `ceil(sqrt(x))`. This statement ensures we return floor.</span>
+  94 |     | <span class='neutral'>            // See: https://en.wikipedia.org/wiki/Integer_square_root#Using_only_integer_division</span>
+  95 | *   | <span class='executed'>            z := sub(z, lt(div(x, z), z))</span>
+  96 |     | <span class='neutral'>        }</span>
+  97 |     | <span class='neutral'>    }</span>
+  98 |     | <span class='neutral'>}</span>
+  99 |     | <span class='neutral'></span>
+
+</code>
+<br />
+
+<b>/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/src/Wrapper.sol</b>
+<code>
+  1 |     | <span class='neutral'>// SPDX-License-Identifier: MIT</span>
+  2 |     | <span class='neutral'>// @notice We intentionally want to leave this as floating point so others can use it as a library.</span>
+  3 |     | <span class='neutral'>pragma solidity ^0.8.3;</span>
+  4 |     | <span class='neutral'></span>
+  5 |     | <span class='neutral'>import {MathMasters} from &quot;./MathMasters.sol&quot;;</span>
+  6 |     | <span class='neutral'></span>
+  7 | *   | <span class='executed'>contract Wrapper {</span>
+  8 |     | <span class='neutral'></span>
+  9 |     | <span class='unexecuted'>    constructor() {}</span>
+ 10 | *   | <span class='executed'>    function mulWad(uint256 x, uint256 y) public pure returns (uint256) {</span>
+ 11 | *   | <span class='executed'>        return MathMasters.mulWad(x, y);</span>
+ 12 |     | <span class='neutral'>    }</span>
+ 13 |     | <span class='neutral'></span>
+ 14 | *   | <span class='executed'>    function mulWadUp(uint256 x, uint256 y) public pure returns (uint256) {</span>
+ 15 | *   | <span class='executed'>        return MathMasters.mulWadUp(x, y);</span>
+ 16 |     | <span class='neutral'>    }</span>
+ 17 |     | <span class='neutral'></span>
+ 18 | *   | <span class='executed'>    function sqrt(uint256 x) public pure returns (uint256) {</span>
+ 19 | *   | <span class='executed'>        return MathMasters.sqrt(x);</span>
+ 20 |     | <span class='neutral'>    }</span>
+ 21 |     | <span class='neutral'>}</span>
+ 22 |     | <span class='neutral'></span>
+
+</code>
+<br />
+
+<b>/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/test/recon/BeforeAfter.sol</b>
+<code>
+  1 |     | <span class='neutral'></span>
+  2 |     | <span class='neutral'>// SPDX-License-Identifier: GPL-2.0</span>
+  3 |     | <span class='neutral'>pragma solidity ^0.8.0;</span>
+  4 |     | <span class='neutral'></span>
+  5 |     | <span class='neutral'>import {Setup} from &quot;./Setup.sol&quot;;</span>
+  6 |     | <span class='neutral'></span>
+  7 |     | <span class='neutral'>abstract contract BeforeAfter is Setup {</span>
+  8 |     | <span class='neutral'></span>
+  9 |     | <span class='neutral'>    // struct Vars {</span>
+ 10 |     | <span class='neutral'></span>
+ 11 |     | <span class='neutral'>    // }</span>
+ 12 |     | <span class='neutral'></span>
+ 13 |     | <span class='neutral'>    // Vars internal _before;</span>
+ 14 |     | <span class='neutral'>    // Vars internal _after;</span>
+ 15 |     | <span class='neutral'></span>
+ 16 |     | <span class='neutral'>    // function __before() internal {</span>
+ 17 |     | <span class='neutral'></span>
+ 18 |     | <span class='neutral'>    // }</span>
+ 19 |     | <span class='neutral'></span>
+ 20 |     | <span class='neutral'>    // function __after() internal {</span>
+ 21 |     | <span class='neutral'></span>
+ 22 |     | <span class='neutral'>    // }</span>
+ 23 |     | <span class='neutral'>}</span>
+ 24 |     | <span class='neutral'></span>
+
+</code>
+<br />
+
+<b>/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/test/recon/CryticTester.sol</b>
+<code>
+  1 |     | <span class='neutral'></span>
+  2 |     | <span class='neutral'>// SPDX-License-Identifier: GPL-2.0</span>
+  3 |     | <span class='neutral'>pragma solidity ^0.8.0;</span>
+  4 |     | <span class='neutral'></span>
+  5 |     | <span class='neutral'>import {TargetFunctions} from &quot;./TargetFunctions.sol&quot;;</span>
+  6 |     | <span class='neutral'>import {CryticAsserts} from &quot;@chimera/CryticAsserts.sol&quot;;</span>
+  7 |     | <span class='neutral'></span>
+  8 |     | <span class='neutral'>// echidna . --contract CryticTester --config echidna.yaml</span>
+  9 |     | <span class='neutral'>// medusa fuzz</span>
+ 10 | *r  | <span class='executed'>contract CryticTester is TargetFunctions, CryticAsserts {</span>
+ 11 |     | <span class='neutral'>    constructor() payable {</span>
+ 12 |     | <span class='unexecuted'>        setup();</span>
+ 13 |     | <span class='neutral'>    }</span>
+ 14 |     | <span class='neutral'>}</span>
+ 15 |     | <span class='neutral'></span>
+
+</code>
+<br />
+
+<b>/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/test/recon/Properties.sol</b>
+<code>
+  1 |     | <span class='neutral'></span>
+  2 |     | <span class='neutral'>// SPDX-License-Identifier: GPL-2.0</span>
+  3 |     | <span class='neutral'>pragma solidity ^0.8.0;</span>
+  4 |     | <span class='neutral'></span>
+  5 |     | <span class='neutral'>import {Asserts} from &quot;@chimera/Asserts.sol&quot;;</span>
+  6 |     | <span class='neutral'>import {Setup} from &quot;./Setup.sol&quot;;</span>
+  7 |     | <span class='neutral'></span>
+  8 |     | <span class='neutral'>abstract contract Properties is Setup, Asserts {}</span>
+  9 |     | <span class='neutral'></span>
+
+</code>
+<br />
+
+<b>/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/test/recon/Setup.sol</b>
+<code>
+  1 |     | <span class='neutral'></span>
+  2 |     | <span class='neutral'>// SPDX-License-Identifier: GPL-2.0</span>
+  3 |     | <span class='neutral'>pragma solidity ^0.8.0;</span>
+  4 |     | <span class='neutral'></span>
+  5 |     | <span class='neutral'>import {BaseSetup} from &quot;@chimera/BaseSetup.sol&quot;;</span>
+  6 |     | <span class='neutral'></span>
+  7 |     | <span class='neutral'>import &quot;src/MathMasters.sol&quot;;</span>
+  8 |     | <span class='neutral'>import &quot;src/Wrapper.sol&quot;;</span>
+  9 |     | <span class='neutral'></span>
+ 10 |     | <span class='neutral'>abstract contract Setup is BaseSetup {</span>
+ 11 |     | <span class='neutral'></span>
+ 12 |     | <span class='neutral'>    Wrapper wrapper;</span>
+ 13 | *   | <span class='executed'>    uint256 internal constant WAD = 1e18;</span>
+ 14 |     | <span class='neutral'></span>
+ 15 |     | <span class='unexecuted'>    function setup() internal virtual override {</span>
+ 16 |     | <span class='unexecuted'>      wrapper = new Wrapper();</span>
+ 17 |     | <span class='neutral'>    }</span>
+ 18 |     | <span class='neutral'>}</span>
+ 19 |     | <span class='neutral'></span>
+
+</code>
+<br />
+
+<b>/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/test/recon/TargetFunctions.sol</b>
+<code>
+  1 |     | <span class='neutral'></span>
+  2 |     | <span class='neutral'>// SPDX-License-Identifier: GPL-2.0</span>
+  3 |     | <span class='neutral'>pragma solidity ^0.8.0;</span>
+  4 |     | <span class='neutral'></span>
+  5 |     | <span class='neutral'>import {BaseTargetFunctions} from &quot;@chimera/BaseTargetFunctions.sol&quot;;</span>
+  6 |     | <span class='neutral'>import {BeforeAfter} from &quot;./BeforeAfter.sol&quot;;</span>
+  7 |     | <span class='neutral'>import {Properties} from &quot;./Properties.sol&quot;;</span>
+  8 |     | <span class='neutral'>import {vm} from &quot;@chimera/Hevm.sol&quot;;</span>
+  9 |     | <span class='neutral'></span>
+ 10 |     | <span class='neutral'>abstract contract TargetFunctions is BaseTargetFunctions, Properties, BeforeAfter {</span>
+ 11 | *   | <span class='executed'>  function wrapper_mulWad(uint256 x, uint256 y) public {</span>
+ 12 | *r  | <span class='executed'>    assert(x*y/WAD == wrapper.mulWad(x, y));</span>
+ 13 |     | <span class='neutral'>  }</span>
+ 14 |     | <span class='neutral'></span>
+ 15 | *   | <span class='executed'>  function wrapper_mulWadUp(uint256 x, uint256 y) public {</span>
+ 16 | *   | <span class='executed'>    assert((x*y)/WAD == wrapper.mulWadUp(x, y));</span>
+ 17 |     | <span class='neutral'>  }</span>
+ 18 |     | <span class='neutral'></span>
+ 19 | *   | <span class='executed'>  function wrapper_mulWadUp_revert(uint256 x, uint256 y) public {</span>
+ 20 | *   | <span class='executed'>    require(y &gt; 0 || x &lt;= type(uint256).max / y);</span>
+ 21 | *   | <span class='executed'>    try wrapper.mulWadUp(x, y) {</span>
+ 22 | *   | <span class='executed'>      assert(false);</span>
+ 23 |     | <span class='neutral'>    } catch {</span>
+ 24 |     | <span class='neutral'>      assert(true);</span>
+ 25 |     | <span class='neutral'>    }</span>
+ 26 |     | <span class='neutral'>  }</span>
+ 27 |     | <span class='neutral'></span>
+ 28 | *   | <span class='executed'>  function wrapper_sqrt(uint256 x) public {</span>
+ 29 | *   | <span class='executed'>    assert(x**x == wrapper.sqrt(x));</span>
+ 30 |     | <span class='neutral'>  }</span>
+ 31 |     | <span class='neutral'>}</span>
+ 32 |     | <span class='neutral'></span>
+
+</code>
+<br />
+

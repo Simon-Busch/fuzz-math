@@ -1,0 +1,413 @@
+/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/lib/chimera/src/Asserts.sol
+  1 |     | // SPDX-License-Identifier: MIT
+  2 |     | pragma solidity ^0.8.0;
+  3 |     | 
+  4 |     | abstract contract Asserts {
+  5 |     |     function gt(uint256 a, uint256 b, string memory reason) internal virtual;
+  6 |     | 
+  7 |     |     function gte(uint256 a, uint256 b, string memory reason) internal virtual;
+  8 |     | 
+  9 |     |     function lt(uint256 a, uint256 b, string memory reason) internal virtual;
+ 10 |     | 
+ 11 |     |     function lte(uint256 a, uint256 b, string memory reason) internal virtual;
+ 12 |     | 
+ 13 |     |     function eq(uint256 a, uint256 b, string memory reason) internal virtual;
+ 14 |     | 
+ 15 |     |     function t(bool b, string memory reason) internal virtual;
+ 16 |     | 
+ 17 |     |     function between(uint256 value, uint256 low, uint256 high) internal virtual returns (uint256);
+ 18 |     | 
+ 19 |     |     function between(int256 value, int256 low, int256 high) internal virtual returns (int256);
+ 20 |     | 
+ 21 |     |     function precondition(bool p) internal virtual;
+ 22 |     | }
+ 23 |     | 
+
+/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/lib/chimera/src/BaseProperties.sol
+ 1 |     | // SPDX-License-Identifier: MIT
+ 2 |     | pragma solidity ^0.8.0;
+ 3 |     | 
+ 4 |     | import {BaseSetup} from "./BaseSetup.sol";
+ 5 |     | 
+ 6 |     | abstract contract BaseProperties is BaseSetup {}
+ 7 |     | 
+
+/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/lib/chimera/src/BaseSetup.sol
+ 1 |     | // SPDX-License-Identifier: MIT
+ 2 |     | pragma solidity ^0.8.0;
+ 3 |     | 
+ 4 |     | abstract contract BaseSetup {
+ 5 |     |     function setup() internal virtual;
+ 6 |     | }
+ 7 |     | 
+
+/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/lib/chimera/src/BaseTargetFunctions.sol
+ 1 |     | // SPDX-License-Identifier: MIT
+ 2 |     | pragma solidity ^0.8.0;
+ 3 |     | 
+ 4 |     | import {BaseProperties} from "./BaseProperties.sol";
+ 5 |     | import {Asserts} from "./Asserts.sol";
+ 6 |     | 
+ 7 |     | abstract contract BaseTargetFunctions is BaseProperties, Asserts {}
+ 8 |     | 
+
+/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/lib/chimera/src/CryticAsserts.sol
+  1 |     | // SPDX-License-Identifier: MIT
+  2 |     | pragma solidity ^0.8.0;
+  3 |     | 
+  4 |     | import {Asserts} from "./Asserts.sol";
+  5 |     | 
+  6 |     | contract CryticAsserts is Asserts {
+  7 |     |     event Log(string);
+  8 |     | 
+  9 |     |     function gt(uint256 a, uint256 b, string memory reason) internal virtual override {
+ 10 |     |         if (!(a > b)) {
+ 11 |     |             emit Log(reason);
+ 12 |     |             assert(false);
+ 13 |     |         }
+ 14 |     |     }
+ 15 |     | 
+ 16 |     |     function gte(uint256 a, uint256 b, string memory reason) internal virtual override {
+ 17 |     |         if (!(a >= b)) {
+ 18 |     |             emit Log(reason);
+ 19 |     |             assert(false);
+ 20 |     |         }
+ 21 |     |     }
+ 22 |     | 
+ 23 |     |     function lt(uint256 a, uint256 b, string memory reason) internal virtual override {
+ 24 |     |         if (!(a < b)) {
+ 25 |     |             emit Log(reason);
+ 26 |     |             assert(false);
+ 27 |     |         }
+ 28 |     |     }
+ 29 |     | 
+ 30 |     |     function lte(uint256 a, uint256 b, string memory reason) internal virtual override {
+ 31 |     |         if (!(a <= b)) {
+ 32 |     |             emit Log(reason);
+ 33 |     |             assert(false);
+ 34 |     |         }
+ 35 |     |     }
+ 36 |     | 
+ 37 |     |     function eq(uint256 a, uint256 b, string memory reason) internal virtual override {
+ 38 |     |         if (!(a == b)) {
+ 39 |     |             emit Log(reason);
+ 40 |     |             assert(false);
+ 41 |     |         }
+ 42 |     |     }
+ 43 |     | 
+ 44 |     |     function t(bool b, string memory reason) internal virtual override {
+ 45 |     |         if (!b) {
+ 46 |     |             emit Log(reason);
+ 47 |     |             assert(false);
+ 48 |     |         }
+ 49 |     |     }
+ 50 |     | 
+ 51 |     |     function between(uint256 value, uint256 low, uint256 high) internal virtual override returns (uint256) {
+ 52 |     |         if (value < low || value > high) {
+ 53 |     |             uint256 ans = low + (value % (high - low + 1));
+ 54 |     |             return ans;
+ 55 |     |         }
+ 56 |     |         return value;
+ 57 |     |     }
+ 58 |     | 
+ 59 |     |     function between(int256 value, int256 low, int256 high) internal virtual override returns (int256) {
+ 60 |     |         if (value < low || value > high) {
+ 61 |     |             int256 range = high - low + 1;
+ 62 |     |             int256 clamped = (value - low) % (range);
+ 63 |     |             if (clamped < 0) clamped += range;
+ 64 |     |             int256 ans = low + clamped;
+ 65 |     |             return ans;
+ 66 |     |         }
+ 67 |     |         return value;
+ 68 |     |     }
+ 69 |     | 
+ 70 |     |     function precondition(bool p) internal virtual override {
+ 71 |     |         require(p);
+ 72 |     |     }
+ 73 |     | }
+ 74 |     | 
+
+/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/lib/chimera/src/Hevm.sol
+  1 |     | // SPDX-License-Identifier: MIT
+  2 |     | pragma solidity ^0.8.0;
+  3 |     | 
+  4 |     | // slither-disable-start shadowing-local
+  5 |     | 
+  6 |     | interface IHevm {
+  7 |     |     // Set block.timestamp to newTimestamp
+  8 |     |     function warp(uint256 newTimestamp) external;
+  9 |     | 
+ 10 |     |     // Set block.number to newNumber
+ 11 |     |     function roll(uint256 newNumber) external;
+ 12 |     | 
+ 13 |     |     // Add the condition b to the assumption base for the current branch
+ 14 |     |     // This function is almost identical to require
+ 15 |     |     function assume(bool b) external;
+ 16 |     | 
+ 17 |     |     // Sets the eth balance of usr to amt
+ 18 |     |     function deal(address usr, uint256 amt) external;
+ 19 |     | 
+ 20 |     |     // Loads a storage slot from an address
+ 21 |     |     function load(address where, bytes32 slot) external returns (bytes32);
+ 22 |     | 
+ 23 |     |     // Stores a value to an address' storage slot
+ 24 |     |     function store(address where, bytes32 slot, bytes32 value) external;
+ 25 |     | 
+ 26 |     |     // Signs data (privateKey, digest) => (v, r, s)
+ 27 |     |     function sign(uint256 privateKey, bytes32 digest) external returns (uint8 v, bytes32 r, bytes32 s);
+ 28 |     | 
+ 29 |     |     // Gets address for a given private key
+ 30 |     |     function addr(uint256 privateKey) external returns (address addr);
+ 31 |     | 
+ 32 |     |     // Performs a foreign function call via terminal
+ 33 |     |     function ffi(string[] calldata inputs) external returns (bytes memory result);
+ 34 |     | 
+ 35 |     |     // Performs the next smart contract call with specified `msg.sender`
+ 36 |     |     function prank(address newSender) external;
+ 37 |     | 
+ 38 |     |     // Creates a new fork with the given endpoint and the latest block and returns the identifier of the fork
+ 39 |     |     function createFork(string calldata urlOrAlias) external returns (uint256);
+ 40 |     | 
+ 41 |     |     // Takes a fork identifier created by createFork and sets the corresponding forked state as active
+ 42 |     |     function selectFork(uint256 forkId) external;
+ 43 |     | 
+ 44 |     |     // Returns the identifier of the current fork
+ 45 |     |     function activeFork() external returns (uint256);
+ 46 |     | 
+ 47 |     |     // Labels the address in traces
+ 48 |     |     function label(address addr, string calldata label) external;
+ 49 |     | 
+ 50 |     |     /// Sets an address' code.
+ 51 |     |     function etch(address target, bytes calldata newRuntimeBytecode) external;
+ 52 |     | }
+ 53 |     | 
+ 54 |     | IHevm constant vm = IHevm(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
+ 55 |     | 
+ 56 |     | // slither-disable-end shadowing-local
+ 57 |     | 
+
+/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/src/MathMasters.sol
+   1 |     | // SPDX-License-Identifier: MIT
+   2 |     | // @notice We intentionally want to leave this as floating point so others can use it as a library.
+   3 |     | pragma solidity ^0.8.3;
+   4 |     | 
+   5 |     | /// @notice Arithmetic library with operations for fixed-point numbers.
+   6 |     | /// @notice People taking my course: Don't cheat and look at the answers!
+   7 |     | /// @author Math Masters
+   8 |     | /// @author Modified from Solady (https://github.com/vectorized/solady/blob/main/src/utils/FixedPointMathLib.sol)
+   9 |     | /// @author Modified from Solmate (https://github.com/transmissions11/solmate/blob/main/src/utils/FixedPointMathLib.sol)
+  10 |     | library MathMasters {
+  11 |     |     /*//////////////////////////////////////////////////////////////
+  12 |     |                                  ERRORS
+  13 |     |     //////////////////////////////////////////////////////////////*/
+  14 |     |     error MathMasters__FactorialOverflow();
+  15 |     |     error MathMasters__MulWadFailed();
+  16 |     |     error MathMasters__DivWadFailed();
+  17 |     |     error MathMasters__FullMulDivFailed();
+  18 |     | 
+  19 |     |     /*//////////////////////////////////////////////////////////////
+  20 |     |     /*                         CONSTANTS                          */
+  21 |     |     //////////////////////////////////////////////////////////////*/
+  22 |     |     /// @dev The scalar of ETH and most ERC20s.
+  23 |     |     uint256 internal constant WAD = 1e18; // WAD just means 18 decimal places
+  24 |     | 
+  25 |     |     // History lesson: WAD, RAY, and RAD were introduced in MakerDAO's original DAI system. The names sort of stuck.
+  26 |     |     // wad: fixed point decimal with 18 decimals (for basic quantities, e.g. balances)
+  27 |     |     // ray: fixed point decimal with 27 decimals (for precise quantites, e.g. ratios)
+  28 |     |     // rad: fixed point decimal with 45 decimals (result of integer multiplication with a wad and a ray)
+  29 |     | 
+  30 |     |     /*//////////////////////////////////////////////////////////////
+  31 |     |     /*              SIMPLIFIED FIXED POINT OPERATIONS             */
+  32 |     |     //////////////////////////////////////////////////////////////*/
+  33 |     | 
+  34 |     |     /// @dev Equivalent to `(x * y) / WAD` rounded down.
+  35 | *   |     function mulWad(uint256 x, uint256 y) internal pure returns (uint256 z) {
+  36 |     |         // @solidity memory-safe-assembly
+  37 |     |         assembly {
+  38 |     |             // Equivalent to `require(y == 0 || x <= type(uint256).max / y)`.
+  39 | *   |             if mul(y, gt(x, div(not(0), y))) {
+  40 | *   |                 mstore(0x40, 0xbac65e5b) // `MathMasters__MulWadFailed()`.
+  41 | *   |                 revert(0x1c, 0x04)
+  42 |     |             }
+  43 | *   |             z := div(mul(x, y), WAD)
+  44 |     |         }
+  45 |     |     }
+  46 |     | 
+  47 |     |     /// @dev Equivalent to `(x * y) / WAD` rounded up.
+  48 | *   |     function mulWadUp(uint256 x, uint256 y) internal pure returns (uint256 z) {
+  49 |     |         /// @solidity memory-safe-assembly
+  50 |     |         assembly {
+  51 |     |             // Equivalent to `require(y == 0 || x <= type(uint256).max / y)`.
+  52 | *   |             if mul(y, gt(x, or(div(not(0), y), x))) {
+  53 |     |                 mstore(0x40, 0xbac65e5b) // `MathMasters__MulWadFailed()`.
+  54 |     |                 revert(0x1c, 0x04)
+  55 |     |             }
+  56 | *   |             if iszero(sub(div(add(z, x), y), 1)) { x := add(x, 1) }
+  57 | *   |             z := add(iszero(iszero(mod(mul(x, y), WAD))), div(mul(x, y), WAD))
+  58 |     |         }
+  59 |     |     }
+  60 |     | 
+  61 |     |     /*//////////////////////////////////////////////////////////////
+  62 |     |     /*                  GENERAL NUMBER UTILITIES                  */
+  63 |     |     //////////////////////////////////////////////////////////////*/
+  64 |     | 
+  65 |     |     /// @dev Returns the square root of `x`.
+  66 | *   |     function sqrt(uint256 x) internal pure returns (uint256 z) {
+  67 |     |         /// @solidity memory-safe-assembly
+  68 |     |         assembly {
+  69 | *   |             z := 181
+  70 |     | 
+  71 |     |             // This segment is to get a reasonable initial estimate for the Babylonian method. With a bad
+  72 |     |             // start, the correct # of bits increases ~linearly each iteration instead of ~quadratically.
+  73 | *   |             let r := shl(7, lt(87112285931760246646623899502532662132735, x))
+  74 | *   |             r := or(r, shl(6, lt(4722366482869645213695, shr(r, x))))
+  75 | *   |             r := or(r, shl(5, lt(1099511627775, shr(r, x))))
+  76 |     |             // Correct: 16777215 0xffffff
+  77 | *   |             r := or(r, shl(4, lt(16777002, shr(r, x))))
+  78 | *   |             z := shl(shr(1, r), z)
+  79 |     | 
+  80 |     |             // There is no overflow risk here since `y < 2**136` after the first branch above.
+  81 | *   |             z := shr(18, mul(z, add(shr(r, x), 65536))) // A `mul()` is saved from starting `z` at 181.
+  82 |     | 
+  83 |     |             // Given the worst case multiplicative error of 2.84 above, 7 iterations should be enough.
+  84 | *   |             z := shr(1, add(z, div(x, z)))
+  85 | *   |             z := shr(1, add(z, div(x, z)))
+  86 | *   |             z := shr(1, add(z, div(x, z)))
+  87 | *   |             z := shr(1, add(z, div(x, z)))
+  88 | *   |             z := shr(1, add(z, div(x, z)))
+  89 | *   |             z := shr(1, add(z, div(x, z)))
+  90 | *   |             z := shr(1, add(z, div(x, z)))
+  91 |     | 
+  92 |     |             // If `x+1` is a perfect square, the Babylonian method cycles between
+  93 |     |             // `floor(sqrt(x))` and `ceil(sqrt(x))`. This statement ensures we return floor.
+  94 |     |             // See: https://en.wikipedia.org/wiki/Integer_square_root#Using_only_integer_division
+  95 | *   |             z := sub(z, lt(div(x, z), z))
+  96 |     |         }
+  97 |     |     }
+  98 |     | }
+  99 |     | 
+
+/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/src/Wrapper.sol
+  1 |     | // SPDX-License-Identifier: MIT
+  2 |     | // @notice We intentionally want to leave this as floating point so others can use it as a library.
+  3 |     | pragma solidity ^0.8.3;
+  4 |     | 
+  5 |     | import {MathMasters} from "./MathMasters.sol";
+  6 |     | 
+  7 | *   | contract Wrapper {
+  8 |     | 
+  9 |     |     constructor() {}
+ 10 | *   |     function mulWad(uint256 x, uint256 y) public pure returns (uint256) {
+ 11 | *   |         return MathMasters.mulWad(x, y);
+ 12 |     |     }
+ 13 |     | 
+ 14 | *   |     function mulWadUp(uint256 x, uint256 y) public pure returns (uint256) {
+ 15 | *   |         return MathMasters.mulWadUp(x, y);
+ 16 |     |     }
+ 17 |     | 
+ 18 | *   |     function sqrt(uint256 x) public pure returns (uint256) {
+ 19 | *   |         return MathMasters.sqrt(x);
+ 20 |     |     }
+ 21 |     | }
+ 22 |     | 
+
+/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/test/recon/BeforeAfter.sol
+  1 |     | 
+  2 |     | // SPDX-License-Identifier: GPL-2.0
+  3 |     | pragma solidity ^0.8.0;
+  4 |     | 
+  5 |     | import {Setup} from "./Setup.sol";
+  6 |     | 
+  7 |     | abstract contract BeforeAfter is Setup {
+  8 |     | 
+  9 |     |     // struct Vars {
+ 10 |     | 
+ 11 |     |     // }
+ 12 |     | 
+ 13 |     |     // Vars internal _before;
+ 14 |     |     // Vars internal _after;
+ 15 |     | 
+ 16 |     |     // function __before() internal {
+ 17 |     | 
+ 18 |     |     // }
+ 19 |     | 
+ 20 |     |     // function __after() internal {
+ 21 |     | 
+ 22 |     |     // }
+ 23 |     | }
+ 24 |     | 
+
+/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/test/recon/CryticTester.sol
+  1 |     | 
+  2 |     | // SPDX-License-Identifier: GPL-2.0
+  3 |     | pragma solidity ^0.8.0;
+  4 |     | 
+  5 |     | import {TargetFunctions} from "./TargetFunctions.sol";
+  6 |     | import {CryticAsserts} from "@chimera/CryticAsserts.sol";
+  7 |     | 
+  8 |     | // echidna . --contract CryticTester --config echidna.yaml
+  9 |     | // medusa fuzz
+ 10 | *r  | contract CryticTester is TargetFunctions, CryticAsserts {
+ 11 |     |     constructor() payable {
+ 12 |     |         setup();
+ 13 |     |     }
+ 14 |     | }
+ 15 |     | 
+
+/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/test/recon/Properties.sol
+  1 |     | 
+  2 |     | // SPDX-License-Identifier: GPL-2.0
+  3 |     | pragma solidity ^0.8.0;
+  4 |     | 
+  5 |     | import {Asserts} from "@chimera/Asserts.sol";
+  6 |     | import {Setup} from "./Setup.sol";
+  7 |     | 
+  8 |     | abstract contract Properties is Setup, Asserts {}
+  9 |     | 
+
+/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/test/recon/Setup.sol
+  1 |     | 
+  2 |     | // SPDX-License-Identifier: GPL-2.0
+  3 |     | pragma solidity ^0.8.0;
+  4 |     | 
+  5 |     | import {BaseSetup} from "@chimera/BaseSetup.sol";
+  6 |     | 
+  7 |     | import "src/MathMasters.sol";
+  8 |     | import "src/Wrapper.sol";
+  9 |     | 
+ 10 |     | abstract contract Setup is BaseSetup {
+ 11 |     | 
+ 12 |     |     Wrapper wrapper;
+ 13 | *   |     uint256 internal constant WAD = 1e18;
+ 14 |     | 
+ 15 |     |     function setup() internal virtual override {
+ 16 |     |       wrapper = new Wrapper();
+ 17 |     |     }
+ 18 |     | }
+ 19 |     | 
+
+/Users/simonbusch/code/white-hat-hacking/codehawks/math-test/test/recon/TargetFunctions.sol
+  1 |     | 
+  2 |     | // SPDX-License-Identifier: GPL-2.0
+  3 |     | pragma solidity ^0.8.0;
+  4 |     | 
+  5 |     | import {BaseTargetFunctions} from "@chimera/BaseTargetFunctions.sol";
+  6 |     | import {BeforeAfter} from "./BeforeAfter.sol";
+  7 |     | import {Properties} from "./Properties.sol";
+  8 |     | import {vm} from "@chimera/Hevm.sol";
+  9 |     | 
+ 10 |     | abstract contract TargetFunctions is BaseTargetFunctions, Properties, BeforeAfter {
+ 11 | *   |   function wrapper_mulWad(uint256 x, uint256 y) public {
+ 12 | *r  |     assert(x*y/WAD == wrapper.mulWad(x, y));
+ 13 |     |   }
+ 14 |     | 
+ 15 | *   |   function wrapper_mulWadUp(uint256 x, uint256 y) public {
+ 16 | *   |     assert((x*y+WAD-1)/WAD == wrapper.mulWadUp(x, y));
+ 17 |     |   }
+ 18 |     | 
+ 19 | *   |   function wrapper_sqrt(uint256 x) public {
+ 20 | *   |     assert(wrapper.sqrt(x) == wrapper.sqrt(x));
+ 21 |     |   }
+ 22 |     | }
+ 23 |     | 
+
